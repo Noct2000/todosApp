@@ -1,4 +1,4 @@
-package com.example.todosApp;
+package com.example.todos.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
