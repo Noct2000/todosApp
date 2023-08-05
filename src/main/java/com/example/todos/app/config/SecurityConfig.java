@@ -51,6 +51,9 @@ public class SecurityConfig {
         http.formLogin(withDefaults());
 
         http.csrf(csrf -> csrf.disable());
+        // OR
+        // http.csrf(AbstractHttpConfigurer::disable);
+        // Starting from SB 3.1.x
         http.headers(
                 headers -> headers.frameOptions(
                         HeadersConfigurer.FrameOptionsConfig::disable
