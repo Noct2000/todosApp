@@ -1,11 +1,15 @@
 package com.example.todos.app.model;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "todo")
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,13 +25,11 @@ public class Todo {
     }
 
     public Todo(
-            Long id,
             String username,
             String description,
             LocalDate targetDate,
             Boolean done
     ) {
-        this.id = id;
         this.username = username;
         this.description = description;
         this.targetDate = targetDate;
