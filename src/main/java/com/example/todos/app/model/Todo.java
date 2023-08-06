@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
@@ -14,7 +13,6 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 5, message = "Enter at least 5 characters")
     private String description;
     private LocalDate targetDate;
     private Boolean done;
@@ -68,7 +66,7 @@ public class Todo {
         this.targetDate = targetDate;
     }
 
-    public Boolean isDone() {
+    public Boolean getDone() {
         return done;
     }
 
