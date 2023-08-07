@@ -1,3 +1,6 @@
+setup:
+	cp .env_sample .env
+
 up:
 	docker compose -f docker-compose.yml up
 
