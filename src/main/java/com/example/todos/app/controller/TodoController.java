@@ -78,15 +78,16 @@ public class TodoController {
     }
 
     @PostMapping("/update-todo")
-    public String updateTodo(
-            @Valid TodoRequestDto todoRequestDto,
+    @ResponseBody
+    public ResponseEntity<Todo> updateTodo(
+            @Valid @RequestBody TodoRequestDto todoRequestDto,
             @RequestParam Long id
     ) {
         Todo todo = todoMapper.toModel(todoRequestDto);
         todo.setId(id);
         todo.setUsername(getLoggedInUsername());
         todoService.save(todo);
-        return "redirect:list-todos";
+        return ResponseEntity.ok(todo);
     }
 
     private String getLoggedInUsername() {
