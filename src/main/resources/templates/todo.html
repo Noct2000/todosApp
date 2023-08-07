@@ -1,0 +1,113 @@
+<html>
+<head>
+    <link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet" >
+    <link href="webjars/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css" rel="stylesheet" >
+
+    <title>Manage Your Todos</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-light bg-light mb-3 p-1">
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/list-todos">Todos</a></li>
+        </ul>
+    </div>
+    <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+    <h1>Enter Todo Details</h1>
+
+    <form id="todoForm">
+
+        <fieldset class="mb-3">
+            <label for="description">Description</label>
+            <input type="text" id="description" required="required"/>
+        </fieldset>
+
+        <fieldset class="mb-3">
+            <label for="targetDate">Target Date</label>
+            <input type="text" id="targetDate" required="required"/>
+        </fieldset>
+
+        <fieldset class="mb-3">
+            <label for="done">Target Date</label>
+            <input type="checkbox" id="done" />
+        </fieldset>
+
+        <button id="submitButton" type="submit" class="btn btn-success">Send</button>
+
+    </form>
+
+</div>
+
+<div id="attributeContainer" th:attr="data-form-action=${formAction}"></div>
+
+<script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+<script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+<script src="webjars/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#targetDate').datepicker({
+            format: 'yyyy-mm-dd'
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    const todoForm = document.getElementById("todoForm");
+    const descriptionField = document.getElementById("description");
+    const targetDateField = document.getElementById("targetDate");
+    const doneField = document.getElementById("done");
+    const submitButton = document.getElementById("submitButton");
+
+    todoForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        descriptionField.disabled = true;
+        targetDateField.disabled = true;
+        doneField.disabled = true;
+        submitButton.disabled = true;
+
+        const description = descriptionField.value;
+        const targetDate = targetDateField.value;
+        const done = doneField.checked;
+        console.log(`description = ${description}`);
+        console.log(`targetDate = ${targetDate}`);
+        console.log(`done = ${done}`);
+
+        const formAction = document.getElementById("attributeContainer").getAttribute("data-form-action");
+
+        fetch(formAction, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({"description": description, "targetDate": targetDate, "done": done}),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    alert(`Status code: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                window.location.replace("/list-todos");
+            })
+            .catch((error) => console.error(error))
+            .finally(() => {
+                descriptionField.disabled = false;
+                targetDateField.disabled = false;
+                submitButton.disabled = false;
+                doneField.disabled = false;
+                descriptionField.value = "";
+            });
+    });
+
+</script>
+
+</body>
+</html>
