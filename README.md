@@ -45,7 +45,7 @@ The Todos app is a simple example project that utilizes Thymeleaf for showing we
    make setup
    ```
 
-2. Build the native executable file and Docker image for the native executable:
+2. Build the native executable file and Docker image:
 
    ```shell
    make native-build
