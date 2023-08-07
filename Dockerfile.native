@@ -1,0 +1,12 @@
+FROM ghcr.io/graalvm/native-image:ol8-java17-22 AS builder
+WORKDIR /build
+# Copy the source code into the image for building
+COPY . /build
+
+# Build
+RUN ./mvnw native:compile -Pnative
+
+# The deployment Image
+FROM docker.io/oraclelinux:8-slim
+COPY --from=builder /build/target/todos-app/ ./
+ENTRYPOINT ["/todos-app"]

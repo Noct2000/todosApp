@@ -22,30 +22,30 @@
 
     <h1>Enter Todo Details</h1>
 
-    <form th:action="@{${formAction}}" method="post" th:object="${todo}">
+    <form id="todoForm">
 
         <fieldset class="mb-3">
             <label for="description">Description</label>
-            <input type="text" id="description" th:field="*{description}" required="required"/>
-            <p class="text-warning" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+            <input type="text" id="description" required="required"/>
         </fieldset>
 
         <fieldset class="mb-3">
             <label for="targetDate">Target Date</label>
-            <input type="text" id="targetDate" th:field="*{targetDate}" required="required"/>
-            <p class="text-warning" th:if="${#fields.hasErrors('targetDate')}" th:errors="*{targetDate}"></p>
+            <input type="text" id="targetDate" required="required"/>
         </fieldset>
 
         <fieldset class="mb-3">
             <label for="done">Target Date</label>
-            <input type="checkbox" id="done" th:field="*{done}"/>
+            <input type="checkbox" id="done" />
         </fieldset>
 
-        <input type="submit" class="btn btn-success"/>
+        <button id="submitButton" type="submit" class="btn btn-success">Send</button>
 
     </form>
 
 </div>
+
+<div id="attributeContainer" th:attr="data-form-action=${formAction}"></div>
 
 <script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
 <script src="webjars/jquery/3.6.0/jquery.min.js"></script>
@@ -56,6 +56,57 @@
             format: 'yyyy-mm-dd'
         });
     });
+</script>
+
+<script type="text/javascript">
+    const todoForm = document.getElementById("todoForm");
+    const descriptionField = document.getElementById("description");
+    const targetDateField = document.getElementById("targetDate");
+    const doneField = document.getElementById("done");
+    const submitButton = document.getElementById("submitButton");
+
+    todoForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        descriptionField.disabled = true;
+        targetDateField.disabled = true;
+        doneField.disabled = true;
+        submitButton.disabled = true;
+
+        const description = descriptionField.value;
+        const targetDate = targetDateField.value;
+        const done = doneField.checked;
+        console.log(`description = ${description}`);
+        console.log(`targetDate = ${targetDate}`);
+        console.log(`done = ${done}`);
+
+        const formAction = document.getElementById("attributeContainer").getAttribute("data-form-action");
+
+        fetch(formAction, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({"description": description, "targetDate": targetDate, "done": done}),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    alert(`Status code: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                window.location.replace("/list-todos");
+            })
+            .catch((error) => console.error(error))
+            .finally(() => {
+                descriptionField.disabled = false;
+                targetDateField.disabled = false;
+                submitButton.disabled = false;
+                doneField.disabled = false;
+                descriptionField.value = "";
+            });
+    });
+
 </script>
 
 </body>

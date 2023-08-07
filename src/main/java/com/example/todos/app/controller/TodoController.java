@@ -7,14 +7,16 @@ import com.example.todos.app.service.TodoService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class TodoController {
@@ -50,18 +52,14 @@ public class TodoController {
     }
 
     @PostMapping("/add-todo")
-    public String addNewTodo(
-            @Valid TodoRequestDto todoRequestDto,
-            BindingResult result
+    @ResponseBody
+    public ResponseEntity<Todo> addNewTodo(
+            @Valid @RequestBody TodoRequestDto todoRequestDto
     ) {
-        if (result.hasErrors()) {
-            return "todo";
-        }
-
         Todo todo = todoMapper.toModel(todoRequestDto);
         todo.setUsername(getLoggedInUsername());
         todoService.save(todo);
-        return "redirect:list-todos";
+        return ResponseEntity.ok(todo);
     }
 
     @GetMapping("/delete-todo")
@@ -82,12 +80,8 @@ public class TodoController {
     @PostMapping("/update-todo")
     public String updateTodo(
             @Valid TodoRequestDto todoRequestDto,
-            BindingResult result,
             @RequestParam Long id
     ) {
-        if (result.hasErrors()) {
-            return "todo";
-        }
         Todo todo = todoMapper.toModel(todoRequestDto);
         todo.setId(id);
         todo.setUsername(getLoggedInUsername());
